@@ -308,16 +308,22 @@
         padding: 1rem;
       }
 
-      /* Brand strip: apilar todo en columna */
+      /* Brand strip: apilar todo en columna y centrar sin espacios raros */
       .brand-strip {
         flex-direction: column;
         align-items: center;
+        justify-content: center;  /* 🔹 clave para sacar el espacio grande */
         text-align: center;
+        gap: 1rem;               /* separaciones parejas entre logo-texto-logo */
       }
 
       .brand-logo img {
         max-height: 52px;
-        max-width: 160px;
+        max-width: 150px;
+      }
+
+      .brand-center {
+        max-width: 100%;
       }
 
       .filters {
@@ -618,4 +624,3 @@ habilitadas para la dispensa de opioides</span>
 
 </body>
 </html>
-

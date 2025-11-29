@@ -56,12 +56,12 @@
       padding: 1.5rem;
     }
 
-    /* ------------------------- BRAND STRIP ------------------------- */
+    /* ------------------------- BRAND STRIP (LOGOS) ------------------------- */
     .brand-strip {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      display: flex;
       align-items: center;
-      gap: 1rem;
+      justify-content: space-between;
+      gap: 1.5rem;
       padding: 1.5rem;
       background: #ffffff;
       border-radius: 1rem;
@@ -69,15 +69,30 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       border-left: 5px solid var(--alef-morado);
       border-right: 5px solid var(--alef-primary);
+      flex-wrap: wrap;
     }
 
-    .brand-strip img {
+    .brand-logo {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .brand-logo img {
       max-height: 62px;
+      max-width: 200px;
       width: auto;
+      height: auto;
     }
 
-    .brand-strip span {
+    .brand-center {
+      flex: 1 1 220px;
       text-align: center;
+    }
+
+    .brand-center span {
+      display: inline-block;
       font-weight: 700;
       font-size: 1.05rem;
       line-height: 1.4;
@@ -277,6 +292,57 @@
     /* ------------------------- RESPONSIVE ------------------------- */
 
     @media (max-width: 768px) {
+      header {
+        padding: 1.5rem 0.75rem 1.5rem;
+      }
+
+      header img {
+        height: 70px;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      main {
+        padding: 1rem;
+      }
+
+      /* Brand strip: apilar todo en columna */
+      .brand-strip {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .brand-logo img {
+        max-height: 52px;
+        max-width: 160px;
+      }
+
+      .filters {
+        flex-direction: column;
+      }
+
+      .btn-reset {
+        width: 100%;
+        text-align: center;
+      }
+
+      .pharmacy-card {
+        padding: 0.9rem;
+      }
+
+      .pharmacy-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .contact-card {
+        margin-top: 0.5rem;
+        padding: 1.2rem;
+      }
+
       .totax-row {
         flex-direction: column;
         margin-top: 2rem;
@@ -290,6 +356,25 @@
         font-size: 0.95rem;
       }
     }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.3rem;
+      }
+
+      .brand-center span {
+        font-size: 0.95rem;
+      }
+
+      .pharmacy-name {
+        font-size: 0.95rem;
+      }
+
+      .contact-card h2 {
+        font-size: 1.15rem;
+      }
+    }
+
   </style>
 </head>
 
@@ -305,12 +390,18 @@
 
     <!-- ------------------------- LOGOS PRINCIPALES ------------------------- -->
     <section class="brand-strip">
-      <img src="Logo_Alefdona_color.png" alt="ALEFDONA" />
+      <div class="brand-logo">
+        <img src="Logo_Alefdona_color.png" alt="ALEFDONA" />
+      </div>
 
-      <span>Red de Farmacias
+      <div class="brand-center">
+        <span>Red de Farmacias
 habilitadas para la dispensa de opioides</span>
+      </div>
 
-      <img src="Logo_Oramorph_color.png" alt="Oramorph" />
+      <div class="brand-logo">
+        <img src="Logo_Oramorph_color.png" alt="Oramorph" />
+      </div>
     </section>
 
     <!-- ------------------------- FILTERS ------------------------- -->
@@ -527,3 +618,4 @@ habilitadas para la dispensa de opioides</span>
 
 </body>
 </html>
+

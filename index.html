@@ -56,7 +56,7 @@
       padding: 1.5rem;
     }
 
-    /* ------------------------- BRAND STRIP (LOGOS) ------------------------- */
+    /* ------------------------- BRAND STRIP ------------------------- */
     .brand-strip {
       display: flex;
       align-items: center;
@@ -88,7 +88,7 @@
 
     .brand-center {
       text-align: center;
-      max-width: 260px;   /* sin flex-grow, ya no se estira */
+      max-width: 260px;
       margin: 0 auto;
     }
 
@@ -104,7 +104,6 @@
     }
 
     /* ---------------------------- FILTERS ---------------------------- */
-
     .filters {
       display: flex;
       flex-wrap: wrap;
@@ -157,7 +156,6 @@
     }
 
     /* ------------------------- PHARMACY LIST ------------------------- */
-
     #results-info {
       font-size: 0.9rem;
       margin-top: 0.5rem;
@@ -213,8 +211,7 @@
 
     .pill-link:hover { background: #eef1f4; }
 
-    /* ------------------------- TOTAX + TEXTO ------------------------- */
-
+    /* ------------------------- TOTAX ROW ------------------------- */
     .totax-row {
       display: flex;
       align-items: center;
@@ -249,7 +246,6 @@
     }
 
     /* ------------------------- CONTACT CARD ------------------------- */
-
     .contact-card {
       background: #ffffff;
       border-radius: 1rem;
@@ -267,49 +263,30 @@
       font-weight: 700;
     }
 
-    .contact-buttons {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-    }
-
-    .btn-contact {
+    button.btn-contact {
       padding: 0.75rem 2rem;
       border-radius: 999px;
+      border: none;
       background: var(--alef-primary);
       color: #ffffff;
-      text-decoration: none;
       font-weight: 600;
       font-size: 1rem;
+      cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       transition: 0.25s;
     }
 
-    .btn-contact:hover {
+    button.btn-contact:hover {
       background: var(--alef-dark);
       transform: translateY(-2px);
     }
 
     /* ------------------------- RESPONSIVE ------------------------- */
-
     @media (max-width: 768px) {
-      header {
-        padding: 1.5rem 0.75rem 1.5rem;
-      }
+      header img { height: 70px; }
+      header h1 { font-size: 1.4rem; }
+      main { padding: 1rem; }
 
-      header img {
-        height: 70px;
-      }
-
-      header h1 {
-        font-size: 1.4rem;
-      }
-
-      main {
-        padding: 1rem;
-      }
-
-      /* Brand strip: columna, sin flex-grow, sin huecos */
       .brand-strip {
         flex-direction: column;
         align-items: center;
@@ -320,7 +297,7 @@
 
       .brand-logo,
       .brand-center {
-        flex: 0 0 auto;   /* 🔹 clave: ninguno se estira, se apilan ajustados */
+        flex: 0 0 auto; /* 🔥 evita que se estiren */
         width: auto;
       }
 
@@ -328,66 +305,7 @@
         max-height: 52px;
         max-width: 150px;
       }
-
-      .brand-center {
-        max-width: 100%;
-      }
-
-      .filters {
-        flex-direction: column;
-      }
-
-      .btn-reset {
-        width: 100%;
-        text-align: center;
-      }
-
-      .pharmacy-card {
-        padding: 0.9rem;
-      }
-
-      .pharmacy-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .contact-card {
-        margin-top: 0.5rem;
-        padding: 1.2rem;
-      }
-
-      .totax-row {
-        flex-direction: column;
-        margin-top: 2rem;
-      }
-
-      .totax-row img {
-        max-width: 200px;
-      }
-
-      .totax-text {
-        font-size: 0.95rem;
-      }
     }
-
-    @media (max-width: 480px) {
-      header h1 {
-        font-size: 1.3rem;
-      }
-
-      .brand-center span {
-        font-size: 0.95rem;
-      }
-
-      .pharmacy-name {
-        font-size: 0.95rem;
-      }
-
-      .contact-card h2 {
-        font-size: 1.15rem;
-      }
-    }
-
   </style>
 </head>
 
@@ -401,7 +319,7 @@
 
   <main>
 
-    <!-- ------------------------- LOGOS PRINCIPALES ------------------------- -->
+    <!-- ------------------------- LOGOS ------------------------- -->
     <section class="brand-strip">
       <div class="brand-logo">
         <img src="Logo_Alefdona_color.png" alt="ALEFDONA" />
@@ -429,11 +347,7 @@ habilitadas para la dispensa de opioides</span>
 
         <div style="flex:1 1 180px;">
           <label for="locality-input">Localidad / Barrio</label>
-          <input 
-            type="text" 
-            id="locality-input" 
-            placeholder="Ej. Recoleta, Mendoza, Rosario..." 
-          />
+          <input type="text" id="locality-input" placeholder="Ej. Recoleta, Mendoza, Rosario..." />
         </div>
       </div>
 
@@ -444,7 +358,7 @@ habilitadas para la dispensa de opioides</span>
     <section id="pharmacy-list"></section>
     <p id="no-results" style="display:none;">No se encontraron farmacias para los filtros seleccionados.</p>
 
-    <!-- ------------------------- TOTAX + TEXTO ------------------------- -->
+    <!-- ------------------------- TOTAX ------------------------- -->
     <div class="totax-row">
       <div class="totax-text">
         El cannabis medicinal como alternativa complementaria para el control del dolor.
@@ -455,19 +369,23 @@ habilitadas para la dispensa de opioides</span>
       </a>
     </div>
 
-    <!-- ------------------------- CONTACT CARD ------------------------- -->
+    <!-- ------------------------- CONTACT ------------------------- -->
     <div class="contact-card">
       <h2>Contacto Alef Medical</h2>
 
-      <div class="contact-buttons">
-        <a class="btn-contact" href="mailto:info@alefmedical.com.ar">Enviar Email</a>
-      </div>
+      <button class="btn-contact" onclick="openEmail();">
+        Enviar Email
+      </button>
     </div>
 
   </main>
 
   <!-- ------------------------- JAVASCRIPT ------------------------- -->
   <script>
+    function openEmail() {
+      window.location.href = "mailto:info@alefmedical.com.ar";
+    }
+
     const pharmacies = [
       { name: "FarmaTotal", address: "J.V. Zapata 303 (esq. Rioja)", locality: "Mendoza Capital", city: "Mendoza Capital", province: "Mendoza", phone: "2614291853", phoneDisplay: "(261) 429-1853", whatsapp: "2615527786", whatsappDisplay: "(261) 552-7786" },
       { name: "Red FarmaShop", address: "Córdoba 2999", locality: "Rosario", city: "Rosario", province: "Santa Fe", whatsapp: "3414307795", whatsappDisplay: "(341) 430-7795" },

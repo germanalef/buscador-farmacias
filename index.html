@@ -297,13 +297,21 @@
 
       .brand-logo,
       .brand-center {
-        flex: 0 0 auto; /* 🔥 evita que se estiren */
+        flex: 0 0 auto;
         width: auto;
+      }
+
+      .brand-center {
+        max-width: 100%;
       }
 
       .brand-logo img {
         max-height: 52px;
         max-width: 150px;
+      }
+
+      .brand-center span {
+        font-size: 0.95rem;
       }
     }
   </style>
@@ -364,7 +372,7 @@ habilitadas para la dispensa de opioides</span>
         El cannabis medicinal como alternativa complementaria para el control del dolor.
       </div>
 
-      <a href="https://totax.com.ar" target="_blank">
+      <a href="https://totax.com.ar" target="_blank" rel="noopener noreferrer">
         <img src="Logo_Totax_color.png" alt="TOTAX">
       </a>
     </div>
@@ -387,17 +395,120 @@ habilitadas para la dispensa de opioides</span>
     }
 
     const pharmacies = [
-      { name: "FarmaTotal", address: "J.V. Zapata 303 (esq. Rioja)", locality: "Mendoza Capital", city: "Mendoza Capital", province: "Mendoza", phone: "2614291853", phoneDisplay: "(261) 429-1853", whatsapp: "2615527786", whatsappDisplay: "(261) 552-7786" },
-      { name: "Red FarmaShop", address: "Córdoba 2999", locality: "Rosario", city: "Rosario", province: "Santa Fe", whatsapp: "3414307795", whatsappDisplay: "(341) 430-7795" },
-      { name: "FarmaPlus Devoto", address: "Av. Beiro 5402", locality: "Villa Devoto", city: "CABA", province: "CABA", phone: "08105557777", phoneDisplay: "0810-555-7777" },
-      { name: "FarmaPlus Villa Urquiza II", address: "Av. Triunvirato 3749", locality: "Villa Urquiza", city: "CABA", province: "CABA", phone: "08105557777", phoneDisplay: "0810-555-7777" },
-      { name: "Farmaet", address: "Av. San Martin 6946", locality: "Villa Devoto", city: "CABA", province: "CABA", phone: "01145051010", phoneDisplay: "011-4505-1010" },
-      { name: "Farmacia Italo Argentina", address: "Av. Combatientes de Malvinas 3105", locality: "Villa Ortúzar", city: "CABA", province: "CABA", phone: "1145211322", phoneDisplay: "11-4521-1322" },
-      { name: "Farmacia Rex", address: "Av. Córdoba 2401", locality: "Recoleta", city: "CABA", province: "CABA", phone: "1149610338", phoneDisplay: "11-4961-0338" },
-      { name: "Farmacia Scienza Pellegrini", address: "C. Pellegrini 163", locality: "San Nicolás", city: "CABA", province: "CABA", whatsapp: "1163999506", whatsappDisplay: "(11) 6399-9506", phone: "1155547975", phoneDisplay: "(11) 5554-7975" },
-      { name: "Farmacia Scienza Pueyrredón", address: "Av. Pueyrredón 1460", locality: "Recoleta", city: "CABA", province: "CABA", whatsapp: "1163999506", whatsappDisplay: "(11) 6399-9506", phone: "1155547975", phoneDisplay: "(11) 5554-7975" },
-      { name: "Farmacia Rissi", address: "H. Yrigoyen 8955", locality: "Lomas de Zamora", city: "Lomas de Zamora", province: "Buenos Aires", phone: "1142442644", phoneDisplay: "(11) 4244-2644" },
-      { name: "Farmacia Azul", address: "Entre Rios 299", locality: "Balvanera", city: "CABA", province: "CABA", phone: "1139854640", phoneDisplay: "(11) 3985-4640" }
+      { 
+        name: "FarmaTotal",
+        address: "J.V. Zapata 303 (esq. Rioja)",
+        locality: "Mendoza Capital",
+        city: "Mendoza Capital",
+        province: "Mendoza",
+        phone: "2614291853",
+        phoneDisplay: "(261) 429-1853",
+        whatsapp: "2615527786",
+        whatsappDisplay: "(261) 552-7786"
+      },
+      {
+        name: "Red FarmaShop",
+        address: "Córdoba 2999",
+        locality: "Rosario",
+        city: "Rosario",
+        province: "Santa Fe",
+        whatsapp: "3414307795",
+        whatsappDisplay: "(341) 430-7795"
+      },
+      {
+        name: "FarmaPlus Devoto",
+        address: "Av. Beiro 5402",
+        locality: "Villa Devoto",
+        city: "CABA",
+        province: "CABA",
+        phone: "08105557777",
+        phoneDisplay: "0810-555-7777"
+      },
+      {
+        name: "FarmaPlus Villa Urquiza II",
+        address: "Av. Triunvirato 3749",
+        locality: "Villa Urquiza",
+        city: "CABA",
+        province: "CABA",
+        phone: "08105557777",
+        phoneDisplay: "0810-555-7777"
+      },
+      {
+        name: "Farmaet",
+        address: "Av. San Martin 6946",
+        locality: "Villa Devoto",
+        city: "CABA",
+        province: "CABA",
+        phone: "01145051010",
+        phoneDisplay: "011-4505-1010"
+      },
+      {
+        name: "Farmacia Italo Argentina",
+        address: "Av. Combatientes de Malvinas 3105",
+        locality: "Villa Ortúzar",
+        city: "CABA",
+        province: "CABA",
+        phone: "1145211322",
+        phoneDisplay: "11-4521-1322"
+      },
+      {
+        name: "Farmacia Rex",
+        address: "Av. Córdoba 2401",
+        locality: "Recoleta",
+        city: "CABA",
+        province: "CABA",
+        phone: "1149610338",
+        phoneDisplay: "11-4961-0338"
+      },
+      {
+        name: "Farmacia Scienza Pellegrini",
+        address: "C. Pellegrini 163",
+        locality: "San Nicolás",
+        city: "CABA",
+        province: "CABA",
+        whatsapp: "1163999506",
+        whatsappDisplay: "(11) 6399-9506",
+        phone: "1155547975",
+        phoneDisplay: "(11) 5554-7975"
+      },
+      {
+        name: "Farmacia Scienza Pueyrredón",
+        address: "Av. Pueyrredón 1460",
+        locality: "Recoleta",
+        city: "CABA",
+        province: "CABA",
+        whatsapp: "1163999506",
+        whatsappDisplay: "(11) 6399-9506",
+        phone: "1155547975",
+        phoneDisplay: "(11) 5554-7975"
+      },
+      {
+        name: "Farmacia Rissi",
+        address: "H. Yrigoyen 8955",
+        locality: "Lomas de Zamora",
+        city: "Lomas de Zamora",
+        province: "Buenos Aires",
+        phone: "1142442644",
+        phoneDisplay: "(11) 4244-2644"
+      },
+      {
+        name: "Farmacia Azul",
+        address: "Entre Rios 299",
+        locality: "Balvanera",
+        city: "CABA",
+        province: "CABA",
+        phone: "1139854640",
+        phoneDisplay: "(11) 3985-4640"
+      },
+      {
+        name: "Farma Star",
+        address: "C. Larralde 3197",
+        locality: "Saavedra",
+        city: "CABA",
+        province: "CABA",
+        whatsapp: "1140271615",
+        whatsappDisplay: "(11) 4027-1615"
+      }
     ];
 
     pharmacies.sort((a, b) =>
@@ -505,6 +616,7 @@ habilitadas para la dispensa de opioides</span>
           maps.className = "pill-link";
           maps.href = buildMapsUrl(p);
           maps.target = "_blank";
+          maps.rel = "noopener noreferrer";
           maps.textContent = "Maps";
           actions.appendChild(maps);
 
@@ -513,6 +625,7 @@ habilitadas para la dispensa de opioides</span>
             wa.className = "pill-link";
             wa.href = buildWhatsappUrl(p.whatsapp);
             wa.target = "_blank";
+            wa.rel = "noopener noreferrer";
             wa.textContent = "WhatsApp " + p.whatsappDisplay;
             actions.appendChild(wa);
           }

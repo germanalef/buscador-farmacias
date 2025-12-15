@@ -23,6 +23,7 @@
       color: var(--gris-texto);
     }
 
+    /* ----------------------------- HEADER ----------------------------- */
     header {
       display: flex;
       flex-direction: column;
@@ -34,7 +35,10 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
 
-    header img { height: 95px; width: auto; }
+    header img {
+      height: 95px;
+      width: auto;
+    }
 
     header h1 {
       font-size: 1.8rem;
@@ -45,12 +49,14 @@
       text-transform: uppercase;
     }
 
+    /* ----------------------------- MAIN ----------------------------- */
     main {
       max-width: 1100px;
       margin: 0 auto;
       padding: 1.5rem;
     }
 
+    /* ------------------------- BRAND STRIP ------------------------- */
     .brand-strip {
       display: flex;
       align-items: center;
@@ -97,6 +103,7 @@
       color: var(--gris-texto);
     }
 
+    /* ---------------------------- FILTERS ---------------------------- */
     .filters {
       display: flex;
       flex-wrap: wrap;
@@ -123,7 +130,7 @@
       color: #555;
     }
 
-    select, input[type="text"], textarea {
+    select, input[type="text"] {
       width: 100%;
       padding: 0.5rem;
       border-radius: 0.5rem;
@@ -148,6 +155,7 @@
       color: #ffffff;
     }
 
+    /* ------------------------- PHARMACY LIST ------------------------- */
     #results-info {
       font-size: 0.9rem;
       margin-top: 0.5rem;
@@ -203,6 +211,7 @@
 
     .pill-link:hover { background: #eef1f4; }
 
+    /* ------------------------- TOTAX ROW ------------------------- */
     .totax-row {
       display: flex;
       align-items: center;
@@ -236,6 +245,7 @@
       filter: brightness(1.05);
     }
 
+    /* ------------------------- CONTACT CARD ------------------------- */
     .contact-card {
       background: #ffffff;
       border-radius: 1rem;
@@ -271,60 +281,7 @@
       transform: translateY(-2px);
     }
 
-    details.admin {
-      margin: 1rem 0 1.25rem;
-      background: #ffffff;
-      border-radius: 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-      border-left: 5px solid var(--alef-morado);
-      overflow: hidden;
-    }
-    details.admin summary {
-      cursor: pointer;
-      padding: 1rem 1.25rem;
-      font-weight: 700;
-      color: var(--alef-dark);
-      user-select: none;
-    }
-    .admin-body { padding: 0 1.25rem 1.25rem; }
-    .admin-body p {
-      margin: 0.25rem 0 0.75rem;
-      color: #666;
-      font-size: 0.95rem;
-      line-height: 1.35;
-    }
-    .admin-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-      justify-content: center;
-    }
-    .btn-admin {
-      border-radius: 999px;
-      padding: 0.55rem 1.1rem;
-      border: 1px solid var(--alef-dark);
-      background: #ffffff;
-      color: var(--alef-dark);
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-admin.primary {
-      border-color: var(--alef-primary);
-      color: var(--alef-primary);
-    }
-    .btn-admin.primary:hover {
-      background: var(--alef-primary);
-      color: #fff;
-    }
-    .btn-admin:hover { background: #eef1f4; }
-    .admin-status {
-      margin-top: 0.75rem;
-      font-size: 0.9rem;
-      color: #666;
-      text-align: center;
-    }
-
+    /* ------------------------- RESPONSIVE ------------------------- */
     @media (max-width: 768px) {
       header img { height: 70px; }
       header h1 { font-size: 1.4rem; }
@@ -339,11 +296,17 @@
       }
 
       .brand-logo,
-      .brand-center { flex: 0 0 auto; width: auto; }
+      .brand-center {
+        flex: 0 0 auto;
+        width: auto;
+      }
 
       .brand-center { max-width: 100%; }
 
-      .brand-logo img { max-height: 52px; max-width: 150px; }
+      .brand-logo img {
+        max-height: 52px;
+        max-width: 150px;
+      }
 
       .brand-center span { font-size: 0.95rem; }
     }
@@ -351,12 +314,14 @@
 </head>
 
 <body>
+
   <header>
     <img src="Logo_AlefMedical.png" alt="Alef Medical" />
     <h1>Alef Medical</h1>
   </header>
 
   <main>
+
     <section class="brand-strip">
       <div class="brand-logo">
         <img src="Logo_Alefdona_color.png" alt="ALEFDONA" />
@@ -371,27 +336,6 @@ habilitadas para la dispensa de opioides</span>
         <img src="Logo_Oramorph_color.png" alt="Oramorph" />
       </div>
     </section>
-
-    <details class="admin">
-      <summary>Administrar listado (pegar / actualizar farmacias)</summary>
-      <div class="admin-body">
-        <p>
-          Pegá 1 farmacia por línea usando este formato:
-          <br><strong>Nombre | Dirección | Localidad/Barrio | Provincia | WhatsApp(opcional) | Tel(opcional)</strong>
-        </p>
-
-        <textarea id="bulk-input" rows="8" placeholder="Ej:
-Farma Star | C. Larralde 3195 | Saavedra | CABA | +54 11 4027-1615 |
-Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-1111"></textarea>
-
-        <div class="admin-actions">
-          <button class="btn-admin primary" id="btn-apply-list">Aplicar listado</button>
-          <button class="btn-admin" id="btn-clear-saved">Borrar listado guardado</button>
-          <button class="btn-admin" id="btn-load-example">Cargar ejemplo</button>
-        </div>
-        <div class="admin-status" id="admin-status"></div>
-      </div>
-    </details>
 
     <section class="filters">
       <div class="filters-group">
@@ -429,6 +373,7 @@ Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-
       <h2>Contacto Alef Medical</h2>
       <button class="btn-contact" onclick="openEmail();">Enviar Email</button>
     </div>
+
   </main>
 
   <script>
@@ -436,8 +381,7 @@ Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-
       window.location.href = "mailto:info@alefmedical.com.ar";
     }
 
-    /* ====================== LISTADO BASE (ACTUALIZADO) ====================== */
-    const basePharmacies = [
+    const pharmacies = [
       {
         name: "Farmaet",
         address: "Av. San Martin 6946",
@@ -448,7 +392,7 @@ Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-
         phoneDisplay: "011-4505-1010"
       },
       {
-        name: "FarmaStar",
+        name: "Farma Star",
         address: "C. Larralde 3195",
         locality: "Saavedra",
         city: "CABA",
@@ -527,33 +471,35 @@ Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-
       }
     ];
 
-    /* ====================== CARGA DESDE localStorage ====================== */
-    const STORAGE_KEY = "alef_pharmacies_v1";
+    pharmacies.sort((a, b) =>
+      (a.province || "").localeCompare(b.province || "") ||
+      (a.locality || "").localeCompare(b.locality || "") ||
+      (a.name || "").localeCompare(b.name || "")
+    );
 
-    function getSavedPharmacies() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return null;
-        return parsed;
-      } catch (_) { return null; }
-    }
+    const provinceSelect = document.getElementById("province-select");
+    const localityInput = document.getElementById("locality-input");
+    const btnReset = document.getElementById("btn-reset");
+    const pharmacyList = document.getElementById("pharmacy-list");
+    const resultsInfo = document.getElementById("results-info");
+    const noResults = document.getElementById("no-results");
 
-    function savePharmacies(list) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    }
+    const provinces = [...new Set(pharmacies.map(p => p.province))].sort();
+    provinces.forEach(prov => {
+      const opt = document.createElement("option");
+      opt.value = prov;
+      opt.textContent = prov;
+      provinceSelect.appendChild(opt);
+    });
 
-    function clearSavedPharmacies() {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-
-    /* ====================== UTILIDADES ====================== */
     function cleanDigits(str) { return (str || "").replace(/\D/g, ""); }
 
-    function prettifyPhone(rawDigits, fallbackOriginal) {
-      const d = cleanDigits(rawDigits);
-      return fallbackOriginal?.trim() ? fallbackOriginal.trim() : (d ? d : "");
+    function normalizeText(s) {
+      return (s || "")
+        .toString()
+        .trim()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
     }
 
     function buildMapsUrl(p) {
@@ -569,94 +515,6 @@ Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-
     function buildTelUrl(n) {
       const d = cleanDigits(n);
       return d ? "tel:" + d : "#";
-    }
-
-    function normalizeText(s) {
-      return (s || "")
-        .toString()
-        .trim()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase();
-    }
-
-    function sortPharmacies(list) {
-      list.sort((a, b) =>
-        (a.province || "").localeCompare(b.province || "") ||
-        (a.locality || "").localeCompare(b.locality || "") ||
-        (a.name || "").localeCompare(b.name || "")
-      );
-      return list;
-    }
-
-    /* ====================== PARSER DE LISTADO PEGADO ====================== */
-    function parseBulkList(text) {
-      const lines = (text || "").split("\n").map(l => l.trim()).filter(Boolean);
-      const parsed = [];
-
-      lines.forEach((line, idx) => {
-        const parts = line.split("|").map(p => p.trim());
-        const name = parts[0] || "";
-        const address = parts[1] || "";
-        const locality = parts[2] || "";
-        const province = parts[3] || "";
-
-        if (!name || !address || !locality || !province) {
-          throw new Error(`Línea ${idx + 1}: faltan campos. Formato: Nombre | Dirección | Localidad | Provincia | WhatsApp | Tel`);
-        }
-
-        const whatsappRaw = parts[4] || "";
-        const phoneRaw = parts[5] || "";
-
-        const obj = {
-          name,
-          address,
-          locality,
-          city: (province === "CABA" ? "CABA" : locality),
-          province
-        };
-
-        if (cleanDigits(whatsappRaw)) {
-          obj.whatsapp = cleanDigits(whatsappRaw);
-          obj.whatsappDisplay = prettifyPhone(obj.whatsapp, whatsappRaw);
-        }
-        if (cleanDigits(phoneRaw)) {
-          obj.phone = cleanDigits(phoneRaw);
-          obj.phoneDisplay = prettifyPhone(obj.phone, phoneRaw);
-        }
-
-        parsed.push(obj);
-      });
-
-      return sortPharmacies(parsed);
-    }
-
-    /* ====================== ESTADO PRINCIPAL ====================== */
-    let pharmacies = sortPharmacies(getSavedPharmacies() || [...basePharmacies]);
-
-    const provinceSelect = document.getElementById("province-select");
-    const localityInput = document.getElementById("locality-input");
-    const btnReset = document.getElementById("btn-reset");
-    const pharmacyList = document.getElementById("pharmacy-list");
-    const resultsInfo = document.getElementById("results-info");
-    const noResults = document.getElementById("no-results");
-
-    const bulkInput = document.getElementById("bulk-input");
-    const btnApplyList = document.getElementById("btn-apply-list");
-    const btnClearSaved = document.getElementById("btn-clear-saved");
-    const btnLoadExample = document.getElementById("btn-load-example");
-    const adminStatus = document.getElementById("admin-status");
-
-    function setAdminStatus(msg) { adminStatus.textContent = msg || ""; }
-
-    function populateProvinces() {
-      provinceSelect.innerHTML = '<option value="">Todas las provincias</option>';
-      const provinces = [...new Set(pharmacies.map(p => p.province).filter(Boolean))].sort();
-      provinces.forEach(prov => {
-        const opt = document.createElement("option");
-        opt.value = prov;
-        opt.textContent = prov;
-        provinceSelect.appendChild(opt);
-      });
     }
 
     function renderPharmacies() {
@@ -680,7 +538,8 @@ Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-
 
       noResults.style.display = "none";
       resultsInfo.textContent =
-        `Mostrando ${filtered.length} farmacia(s)` + (prov ? ` en ${prov}` : "");
+        `Mostrando ${filtered.length} farmacia(s)` +
+        (prov ? ` en ${prov}` : "");
 
       const groups = {};
       filtered.forEach(p => {
@@ -767,52 +626,8 @@ Farmacia X | Av. Siempre Viva 742 | Rosario | Santa Fe | 341 555-0000 | 341 444-
       renderPharmacies();
     });
 
-    btnApplyList.addEventListener("click", () => {
-      try {
-        const text = bulkInput.value || "";
-        const list = parseBulkList(text);
-        pharmacies = list;
-        savePharmacies(pharmacies);
-        populateProvinces();
-        provinceSelect.value = "";
-        localityInput.value = "";
-        renderPharmacies();
-        setAdminStatus(`Listo. Se cargaron ${pharmacies.length} farmacias y quedó guardado en este dispositivo.`);
-      } catch (e) {
-        setAdminStatus(e.message || "Error al procesar el listado.");
-      }
-    });
-
-    btnClearSaved.addEventListener("click", () => {
-      clearSavedPharmacies();
-      pharmacies = sortPharmacies([...basePharmacies]);
-      populateProvinces();
-      provinceSelect.value = "";
-      localityInput.value = "";
-      renderPharmacies();
-      setAdminStatus("Se borró el listado guardado. Volviste al listado base.");
-    });
-
-    btnLoadExample.addEventListener("click", () => {
-      bulkInput.value =
-`Farmaet | Av. San Martin 6946 | Villa Devoto | CABA | | 011-4505-1010
-FarmaStar | C. Larralde 3195 | Saavedra | CABA | | (11) 4027-1615
-Farmacia Rex | Av. Córdoba 2401 | Recoleta | CABA | | 11-4961-0338
-Farmacia Scienza Pellegrini | C. Pellegrini 163 | San Nicolás | CABA | (11) 6399-9506 | (11) 5554-7975
-Farmacia Scienza Pueyrredón | Av. Pueyrredón 1460 | Recoleta | CABA | (11) 6399-9506 | (11) 5554-7975
-Farmacia Rissi | H. Yrigoyen 8955 | Lomas de Zamora | Buenos Aires | | (11) 4244-2644
-Farmacia Paradiñeiro | Shopping Torres del Sol, Ruta Panamericana km.50 | Pilar | Buenos Aires | | (0230) 447-3005
-FarmaTotal | J.V. Zapata 303 (esq. Rioja) | Mendoza Capital | Mendoza | (261) 552-7786 | (261) 429-1853
-Red FarmaShop | Córdoba 2999 | Rosario | Santa Fe | (341) 430-7795 |`;
-      setAdminStatus("Ejemplo (tu listado) cargado. Si querés guardarlo, tocá “Aplicar listado”.");
-    });
-
-    populateProvinces();
     renderPharmacies();
-
-    if (getSavedPharmacies()) {
-      setAdminStatus("Estás usando un listado guardado previamente en este dispositivo.");
-    }
   </script>
+
 </body>
 </html>

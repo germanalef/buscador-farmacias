@@ -281,6 +281,19 @@
       transform: translateY(-2px);
     }
 
+    /* ------------------------- LOADING / ERROR ------------------------- */
+    .status-card {
+      background: #fff;
+      border-radius: 0.9rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      color: #555;
+    }
+
+    .status-card strong { color: var(--alef-dark); }
+
     /* ------------------------- RESPONSIVE ------------------------- */
     @media (max-width: 768px) {
       header img { height: 70px; }
@@ -340,19 +353,24 @@
       <div class="filters-group">
         <div style="flex:1 1 180px;">
           <label for="province-select">Provincia</label>
-          <select id="province-select">
-            <option value="">Todas las provincias</option>
+          <select id="province-select" disabled>
+            <option value="">Cargando...</option>
           </select>
         </div>
 
         <div style="flex:1 1 180px;">
           <label for="locality-input">Localidad / Barrio</label>
-          <input type="text" id="locality-input" placeholder="Ej. Recoleta, Mendoza, Rosario..." />
+          <input type="text" id="locality-input" placeholder="Ej. Recoleta, Mendoza, Rosario..." disabled />
         </div>
       </div>
 
-      <button class="btn-reset" id="btn-reset">Ver todo el país</button>
+      <button class="btn-reset" id="btn-reset" disabled>Ver todo el país</button>
     </section>
+
+    <div id="data-status" class="status-card">
+      <strong>Cargando farmacias...</strong><br/>
+      Si ves este mensaje por mucho tiempo, revisá que exista el archivo <code>farmacias.xlsx</code> en el repo.
+    </div>
 
     <p id="results-info"></p>
     <section id="pharmacy-list"></section>
@@ -375,123 +393,16 @@
 
   </main>
 
+  <!-- SheetJS (XLSX) desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <script>
     function openEmail() {
       window.location.href = "mailto:info@alefmedical.com.ar";
     }
 
-    const pharmacies = [
-      {
-        name: "Farmaet",
-        address: "Av. San Martin 6946",
-        locality: "Villa Devoto",
-        city: "CABA",
-        province: "CABA",
-        phone: "01145051010",
-        phoneDisplay: "011-4505-1010"
-      },
-      {
-        name: "FarmaStar - Consulte por envíos",
-        address: "C. Larralde 3195",
-        locality: "Saavedra",
-        city: "CABA",
-        province: "CABA",
-        whatsapp: "1140271615",
-        whatsappDisplay: "(11) 4027-1615"
-      },
-      {
-        name: "Farmacia Rex",
-        address: "Av. Córdoba 2401",
-        locality: "Recoleta",
-        city: "CABA",
-        province: "CABA",
-        phone: "1149610338",
-        phoneDisplay: "11-4961-0338"
-      },
-      {
-        name: "Farmacia Scienza Pellegrini",
-        address: "C. Pellegrini 163",
-        locality: "San Nicolás",
-        city: "CABA",
-        province: "CABA",
-        whatsapp: "1163999506",
-        whatsappDisplay: "(11) 6399-9506",
-        phone: "1155547975",
-        phoneDisplay: "(11) 5554-7975"
-      },
-      {
-        name: "Farmacia Scienza Pueyrredón",
-        address: "Av. Pueyrredón 1460",
-        locality: "Recoleta",
-        city: "CABA",
-        province: "CABA",
-        whatsapp: "1163999506",
-        whatsappDisplay: "(11) 6399-9506",
-        phone: "1155547975",
-        phoneDisplay: "(11) 5554-7975"
-      },
-      {
-        name: "Farmacia Rissi",
-        address: "H. Yrigoyen 8955",
-        locality: "Lomas de Zamora",
-        city: "Lomas de Zamora",
-        province: "Buenos Aires",
-        phone: "1142442644",
-        phoneDisplay: "(11) 4244-2644"
-      },
-      {
-        name: "Farmacia Paradiñeiro",
-        address: "Shopping Torres del Sol, Ruta Panamericana km.50",
-        locality: "Pilar",
-        city: "Pilar",
-        province: "Buenos Aires",
-        phone: "02304473005",
-        phoneDisplay: "(0230) 447-3005"
-      },
-      {
-        name: "FarmaTotal",
-        address: "J.V. Zapata 303 (esq. Rioja)",
-        locality: "Mendoza Capital",
-        city: "Mendoza Capital",
-        province: "Mendoza",
-        whatsapp: "2615527786",
-        whatsappDisplay: "(261) 552-7786",
-        phone: "2614291853",
-        phoneDisplay: "(261) 429-1853"
-      },
-      {
-        name: "Red FarmaShop",
-        address: "Córdoba 2999",
-        locality: "Rosario",
-        city: "Rosario",
-        province: "Santa Fe",
-        whatsapp: "3414307795",
-        whatsappDisplay: "(341) 430-7795"
-      }
-    ];
-
-    pharmacies.sort((a, b) =>
-      (a.province || "").localeCompare(b.province || "") ||
-      (a.locality || "").localeCompare(b.locality || "") ||
-      (a.name || "").localeCompare(b.name || "")
-    );
-
-    const provinceSelect = document.getElementById("province-select");
-    const localityInput = document.getElementById("locality-input");
-    const btnReset = document.getElementById("btn-reset");
-    const pharmacyList = document.getElementById("pharmacy-list");
-    const resultsInfo = document.getElementById("results-info");
-    const noResults = document.getElementById("no-results");
-
-    const provinces = [...new Set(pharmacies.map(p => p.province))].sort();
-    provinces.forEach(prov => {
-      const opt = document.createElement("option");
-      opt.value = prov;
-      opt.textContent = prov;
-      provinceSelect.appendChild(opt);
-    });
-
-    function cleanDigits(str) { return (str || "").replace(/\D/g, ""); }
+    // -------------------- Helpers --------------------
+    function cleanDigits(str) { return (str || "").toString().replace(/\D/g, ""); }
 
     function normalizeText(s) {
       return (s || "")
@@ -514,6 +425,60 @@
     function buildTelUrl(n) {
       const d = cleanDigits(n);
       return d ? "tel:" + d : "#";
+    }
+
+    function requiredColumnsPresent(row) {
+      const needed = ["name","address","locality","province"];
+      return needed.every(k => (row[k] || "").toString().trim().length > 0);
+    }
+
+    function normalizeRow(r) {
+      // Acepta columnas como en el Excel y arma el objeto final
+      return {
+        name: (r.name || "").toString().trim(),
+        address: (r.address || "").toString().trim(),
+        locality: (r.locality || "").toString().trim(),
+        city: (r.city || "").toString().trim(),
+        province: (r.province || "").toString().trim(),
+        whatsapp: cleanDigits(r.whatsapp || ""),
+        whatsappDisplay: (r.whatsappDisplay || "").toString().trim(),
+        phone: cleanDigits(r.phone || ""),
+        phoneDisplay: (r.phoneDisplay || "").toString().trim(),
+        notes: (r.notes || "").toString().trim()
+      };
+    }
+
+    // -------------------- UI elements --------------------
+    const provinceSelect = document.getElementById("province-select");
+    const localityInput = document.getElementById("locality-input");
+    const btnReset = document.getElementById("btn-reset");
+    const pharmacyList = document.getElementById("pharmacy-list");
+    const resultsInfo = document.getElementById("results-info");
+    const noResults = document.getElementById("no-results");
+    const dataStatus = document.getElementById("data-status");
+
+    let pharmacies = [];
+
+    function enableFilters() {
+      provinceSelect.disabled = false;
+      localityInput.disabled = false;
+      btnReset.disabled = false;
+    }
+
+    function fillProvinces() {
+      provinceSelect.innerHTML = "";
+      const optAll = document.createElement("option");
+      optAll.value = "";
+      optAll.textContent = "Todas las provincias";
+      provinceSelect.appendChild(optAll);
+
+      const provinces = [...new Set(pharmacies.map(p => p.province).filter(Boolean))].sort();
+      provinces.forEach(prov => {
+        const opt = document.createElement("option");
+        opt.value = prov;
+        opt.textContent = prov;
+        provinceSelect.appendChild(opt);
+      });
     }
 
     function renderPharmacies() {
@@ -617,6 +582,70 @@
       });
     }
 
+    // -------------------- Load Excel --------------------
+    async function loadPharmaciesFromExcel() {
+      try {
+        // Cache-busting simple para que GitHub Pages no te muestre una versión vieja
+        const url = "farmacias.xlsx?v=" + Date.now();
+
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error("No se pudo descargar farmacias.xlsx (HTTP " + resp.status + ")");
+
+        const arrayBuffer = await resp.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+
+        const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+        const parsed = rows
+          .map(r => {
+            // Normaliza keys por si Excel viene con mayúsculas/espacios
+            const obj = {};
+            Object.keys(r).forEach(k => obj[(k || "").toString().trim()] = r[k]);
+            return obj;
+          })
+          .map(r => normalizeRow({
+            name: r.name,
+            address: r.address,
+            locality: r.locality,
+            city: r.city,
+            province: r.province,
+            whatsapp: r.whatsapp,
+            whatsappDisplay: r.whatsappDisplay,
+            phone: r.phone,
+            phoneDisplay: r.phoneDisplay,
+            notes: r.notes
+          }))
+          .filter(requiredColumnsPresent);
+
+        pharmacies = parsed.sort((a, b) =>
+          (a.province || "").localeCompare(b.province || "") ||
+          (a.locality || "").localeCompare(b.locality || "") ||
+          (a.name || "").localeCompare(b.name || "")
+        );
+
+        if (!pharmacies.length) {
+          dataStatus.innerHTML = "<strong>No se encontraron filas válidas en el Excel.</strong><br/>" +
+            "Revisá que existan columnas: <code>name, address, locality, province</code> y que no estén vacías.";
+          return;
+        }
+
+        dataStatus.style.display = "none";
+        enableFilters();
+        fillProvinces();
+        renderPharmacies();
+      } catch (err) {
+        dataStatus.innerHTML =
+          "<strong>Error cargando farmacias desde Excel.</strong><br/>" +
+          "1) Verificá que el archivo se llame <code>farmacias.xlsx</code> y esté en la misma carpeta que el HTML.<br/>" +
+          "2) En GitHub Pages: confirmá que el archivo fue subido al repo y no quedó fuera por .gitignore.<br/><br/>" +
+          "<code>" + (err && err.message ? err.message : err) + "</code>";
+      }
+    }
+
+    // Events
     provinceSelect.addEventListener("change", renderPharmacies);
     localityInput.addEventListener("input", renderPharmacies);
     btnReset.addEventListener("click", () => {
@@ -625,8 +654,10 @@
       renderPharmacies();
     });
 
-    renderPharmacies();
+    // Init
+    loadPharmaciesFromExcel();
   </script>
 
 </body>
 </html>
+

@@ -1,364 +1,195 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Red de Farmacias – Línea Dolor | Alef Medical</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root {
-      --alef-primary: #00838f;
-      --alef-dark: #004f6e;
-      --alef-morado: #7b2465;
-      --gris-texto: #4a4a4a;
-      --gris-claro: #f5f7fa;
-      --borde-claro: #d5d8dc;
-    }
-
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--gris-claro);
-      color: var(--gris-texto);
-    }
-
-    header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2.2rem 1rem 2rem;
+      font-family: Arial, sans-serif;
       background: #ffffff;
-      border-bottom: 4px solid var(--alef-primary);
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      color: #222;
     }
 
-    header img { height: 95px; width: auto; }
-
-    header h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin: 0;
-      color: var(--alef-dark);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    /* =====================
+       HEADER RED FARMACIAS
+    ====================== */
+    .header-red-farmacias {
+      background: #ffffff;
+      padding: 30px 15px 15px;
+      border-bottom: 1px solid #e0e0e0;
     }
 
-    main {
+    .header-logos {
       max-width: 1100px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
-
-    .filters {
+      margin: auto;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      padding: 1rem;
-      background: linear-gradient(135deg, rgba(0,131,143,0.14), rgba(123,36,101,0.08));
-      border-radius: 0.9rem;
-      border: 1px solid rgba(0, 79, 110, 0.2);
-      margin-bottom: 1rem;
-    }
-
-    label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #555;
-    }
-
-    select, input {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      border: 1px solid #c5ced8;
-      font-size: 0.95rem;
-      background: #fff;
-    }
-
-    #results-info {
-      font-size: 0.9rem;
-      margin: 0.5rem 0;
-      color: #666;
-    }
-
-    .pharmacy-card {
-      background: #ffffff;
-      border: 2px solid #c1c7d0;
-      border-radius: 0.9rem;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      transition: 0.25s;
-    }
-
-    .pharmacy-card:hover {
-      border-color: var(--alef-primary);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.14);
-    }
-
-    .pharmacy-header {
-      display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: baseline;
-      gap: 0.5rem;
-    }
-
-    .pharmacy-name {
-      font-weight: 600;
-      color: var(--alef-dark);
-      font-size: 1rem;
-    }
-
-    .pharmacy-actions {
-      margin-top: 0.4rem;
-      display: flex;
+      gap: 20px;
       flex-wrap: wrap;
-      gap: 0.4rem;
     }
 
-    .pill-link {
-      padding: 0.3rem 0.7rem;
-      border-radius: 999px;
-      border: 1px solid #d5d8dc;
-      background: #ffffff;
-      font-size: 0.85rem;
-      text-decoration: none;
-      color: var(--gris-texto);
+    .header-logos img {
+      max-height: 60px;
+      object-fit: contain;
     }
 
-    .pill-link:hover { background: #eef1f4; }
+    .header-titulo {
+      text-align: center;
+      flex: 1;
+    }
 
-    .status-card {
-      background: #fff;
-      border-radius: 0.9rem;
-      padding: 1rem;
-      margin: 1rem 0;
-      border: 1px solid rgba(0,0,0,0.08);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    .header-titulo h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #1f2a44;
+    }
+
+    /* =====================
+       BUSCADOR
+    ====================== */
+    .buscador {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .buscador select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    /* =====================
+       LISTADO FARMACIAS
+    ====================== */
+    .farmacias {
+      max-width: 1100px;
+      margin: auto;
+      padding: 0 15px 30px;
+    }
+
+    .farmacia {
+      border-bottom: 1px solid #ddd;
+      padding: 12px 0;
+    }
+
+    .farmacia h4 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+
+    .farmacia p {
+      margin: 0;
+      font-size: 14px;
       color: #555;
     }
 
+    /* =====================
+       BANNER TOTAX
+    ====================== */
+    .banner-totax {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 15px 40px;
+      text-align: center;
+    }
+
+    .banner-totax img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* =====================
+       RESPONSIVE
+    ====================== */
     @media (max-width: 768px) {
-      header img { height: 70px; }
-      header h1 { font-size: 1.4rem; }
-      main { padding: 1rem; }
+      .header-logos {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <img src="Logo_AlefMedical.png" alt="Alef Medical">
-  <h1>Alef Medical</h1>
-</header>
+  <!-- HEADER + LOGOS -->
+  <section class="header-red-farmacias">
+    <div class="header-logos">
+      <img src="Logo_Oramorph_color.png" alt="Oramorph">
 
-<main>
+      <div class="header-titulo">
+        <h1>Red de Farmacias</h1>
+      </div>
 
-  <section class="filters" autocomplete="off">
-    <div style="flex:1 1 200px;">
-      <label for="province-select">Provincia</label>
-      <select id="province-select"></select>
-    </div>
-
-    <div style="flex:1 1 200px;">
-      <label for="locality-input">Localidad / Barrio</label>
-      <input
-        type="text"
-        id="locality-input"
-        name="locality-input"
-        placeholder="Ej. Recoleta, Rosario, Mendoza…"
-        autocomplete="off"
-        autocapitalize="off"
-        autocorrect="off"
-        spellcheck="false"
-        inputmode="search"
-      >
+      <img src="Logo_Alefdona_color.png" alt="Alefdona">
     </div>
   </section>
 
-  <div id="data-status" class="status-card">
-    <strong>Cargando farmacias desde Excel…</strong><br/>
-    Asegurate de que exista <code>farmacias.xlsx</code> en la misma carpeta.
+  <!-- BUSCADOR -->
+  <div class="buscador">
+    <select id="provinciaSelect">
+      <option value="CABA" selected>CABA</option>
+      <option value="Buenos Aires">Buenos Aires</option>
+      <option value="Córdoba">Córdoba</option>
+      <option value="Santa Fe">Santa Fe</option>
+      <option value="Todo">Todo el País</option>
+    </select>
   </div>
 
-  <p id="results-info"></p>
-  <section id="pharmacy-list"></section>
-  <p id="no-results" style="display:none;">No se encontraron farmacias.</p>
+  <!-- LISTADO -->
+  <div class="farmacias" id="listaFarmacias"></div>
 
-</main>
+  <!-- BANNER TOTAX -->
+  <section class="banner-totax">
+    <a href="https://www.totax.com.ar" target="_blank" rel="noopener noreferrer">
+      <img src="Logo_Totax_color.png" alt="TOTAX">
+    </a>
+  </section>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- SCRIPT -->
+  <script>
+    const farmacias = [
+      { nombre: "Farmacia Rex", direccion: "Av. Corrientes 1234", provincia: "CABA" },
+      { nombre: "Farmacia Central", direccion: "Av. Santa Fe 2200", provincia: "CABA" },
+      { nombre: "Farmacia Norte", direccion: "San Martín 450", provincia: "Buenos Aires" },
+      { nombre: "Farmacia Córdoba", direccion: "Colón 300", provincia: "Córdoba" },
+      { nombre: "Farmacia Rosario", direccion: "Pellegrini 900", provincia: "Santa Fe" }
+    ];
 
-<script>
-  const provinceSelect = document.getElementById("province-select");
-  const localityInput = document.getElementById("locality-input");
-  const pharmacyList = document.getElementById("pharmacy-list");
-  const resultsInfo = document.getElementById("results-info");
-  const noResults = document.getElementById("no-results");
-  const dataStatus = document.getElementById("data-status");
+    const select = document.getElementById("provinciaSelect");
+    const lista = document.getElementById("listaFarmacias");
 
-  let pharmacies = [];
+    function renderFarmacias(provincia) {
+      lista.innerHTML = "";
 
-  function normalizeText(s) {
-    return (s || "")
-      .toString()
-      .trim()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-  }
+      const resultado = provincia === "Todo"
+        ? farmacias
+        : farmacias.filter(f => f.provincia === provincia);
 
-  function cleanDigits(v) {
-    // Maneja números, floats (científica), strings, etc.
-    return (v === null || v === undefined) ? "" : String(v).replace(/\D/g, "");
-  }
-
-  function buildMapsUrl(p) {
-    return "https://www.google.com/maps/search/?api=1&query=" +
-      encodeURIComponent(`${p.address}, ${p.locality}, ${p.province}, Argentina`);
-  }
-
-  function buildWhatsappUrl(n) {
-    const d = cleanDigits(n).replace(/^0/, "");
-    return d ? ("https://wa.me/54" + d) : "#";
-  }
-
-  function buildTelUrl(n) {
-    const d = cleanDigits(n);
-    return d ? ("tel:" + d) : "#";
-  }
-
-  function isValidRow(p) {
-    return !!(p.name && p.address && p.locality && p.province);
-  }
-
-  function fillProvinces() {
-    provinceSelect.innerHTML = "";
-
-    const optAll = document.createElement("option");
-    optAll.value = "";
-    optAll.textContent = "Todo el País";
-    provinceSelect.appendChild(optAll);
-
-    const provinces = [...new Set(pharmacies.map(p => p.province).filter(Boolean))].sort();
-    provinces.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p;
-      opt.textContent = p;
-      provinceSelect.appendChild(opt);
-    });
-
-    // Default fijo: CABA si existe; si no, Todo el País
-    provinceSelect.value = provinces.includes("CABA") ? "CABA" : "";
-  }
-
-  function render() {
-    const prov = provinceSelect.value; // "" = Todo el País
-    const term = normalizeText(localityInput.value);
-
-    const filtered = pharmacies.filter(p => {
-      const matchProv = (!prov || p.province === prov);
-      const hay = normalizeText(`${p.name} ${p.locality} ${p.city} ${p.address} ${p.province}`);
-      const matchTerm = (!term || hay.includes(term));
-      return matchProv && matchTerm;
-    });
-
-    pharmacyList.innerHTML = "";
-
-    if (!filtered.length) {
-      noResults.style.display = "block";
-      resultsInfo.textContent = "";
-      return;
+      resultado.forEach(f => {
+        const div = document.createElement("div");
+        div.className = "farmacia";
+        div.innerHTML = `
+          <h4>${f.nombre}</h4>
+          <p>${f.direccion}</p>
+        `;
+        lista.appendChild(div);
+      });
     }
 
-    noResults.style.display = "none";
-    resultsInfo.textContent =
-      `Mostrando ${filtered.length} farmacia(s)` + (prov ? ` en ${prov}` : " en todo el país");
-
-    filtered.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "pharmacy-card";
-
-      card.innerHTML = `
-        <div class="pharmacy-header">
-          <span class="pharmacy-name">${p.name}</span>
-          <span style="font-size:.85rem;color:#777">${p.locality}</span>
-        </div>
-        <p>${p.address} - ${p.locality}</p>
-
-        <div class="pharmacy-actions">
-          <a class="pill-link" href="${buildMapsUrl(p)}" target="_blank" rel="noopener noreferrer">Maps</a>
-          ${p.whatsapp ? `<a class="pill-link" href="${buildWhatsappUrl(p.whatsapp)}" target="_blank" rel="noopener noreferrer">WhatsApp ${p.whatsappDisplay || p.whatsapp}</a>` : ""}
-          ${p.phone ? `<a class="pill-link" href="${buildTelUrl(p.phone)}">Tel. ${p.phoneDisplay || p.phone}</a>` : ""}
-        </div>
-      `;
-
-      pharmacyList.appendChild(card);
+    select.addEventListener("change", () => {
+      renderFarmacias(select.value);
     });
-  }
 
-  async function loadExcel() {
-    try {
-      const res = await fetch("farmacias.xlsx?v=" + Date.now());
-      if (!res.ok) throw new Error("No se pudo descargar farmacias.xlsx (HTTP " + res.status + ")");
-
-      const data = await res.arrayBuffer();
-      const wb = XLSX.read(data, { type: "array" });
-
-      const sheetName = wb.SheetNames.includes("Farmacias") ? "Farmacias" : wb.SheetNames[0];
-      const sheet = wb.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
-      pharmacies = rows
-        .map(r => ({
-          name: (r.name || "").toString().trim(),
-          address: (r.address || "").toString().trim(),
-          locality: (r.locality || "").toString().trim(),
-          city: (r.city || "").toString().trim(),
-          province: (r.province || "").toString().trim(),
-          whatsapp: cleanDigits(r.whatsapp),
-          whatsappDisplay: (r.whatsappDisplay || "").toString().trim(),
-          phone: cleanDigits(r.phone),
-          phoneDisplay: (r.phoneDisplay || "").toString().trim(),
-          notes: (r.notes || "").toString().trim()
-        }))
-        .filter(isValidRow);
-
-      dataStatus.style.display = "none";
-
-      // IMPORTANTÍSIMO: limpiar el input SIEMPRE (evita “solo Rex” por restauración del navegador)
-      localityInput.value = "";
-      // En Safari a veces restaura después: doble limpieza
-      setTimeout(() => { localityInput.value = ""; }, 0);
-      setTimeout(() => { localityInput.value = ""; }, 200);
-
-      fillProvinces();
-      render();
-    } catch (err) {
-      dataStatus.innerHTML =
-        "<strong>Error cargando farmacias desde Excel.</strong><br/>" +
-        "Verificá que <code>farmacias.xlsx</code> esté en la misma carpeta que el HTML.<br/><br/>" +
-        "<code>" + (err && err.message ? err.message : err) + "</code>";
-    }
-  }
-
-  provinceSelect.addEventListener("change", render);
-  localityInput.addEventListener("input", render);
-
-  // Si el navegador vuelve con bfcache, también limpiamos y re-renderizamos
-  window.addEventListener("pageshow", () => {
-    localityInput.value = "";
-    render();
-  });
-
-  loadExcel();
-</script>
+    // Default CABA
+    renderFarmacias("CABA");
+  </script>
 
 </body>
 </html>

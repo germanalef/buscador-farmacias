@@ -12,6 +12,7 @@
       --alef-morado: #7b2465;
       --gris-texto: #4a4a4a;
       --gris-claro: #f5f7fa;
+      --borde-claro: #d5d8dc;
     }
 
     * { box-sizing: border-box; }
@@ -31,16 +32,18 @@
       background: #ffffff;
       border-bottom: 4px solid var(--alef-primary);
       text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
 
-    header img { height: 95px; }
+    header img { height: 95px; width: auto; }
 
     header h1 {
       font-size: 1.8rem;
+      font-weight: 700;
       margin: 0;
       color: var(--alef-dark);
-      text-transform: uppercase;
       letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
     main {
@@ -51,12 +54,13 @@
 
     .filters {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.75rem;
       padding: 1rem;
       background: linear-gradient(135deg, rgba(0,131,143,0.14), rgba(123,36,101,0.08));
       border-radius: 0.9rem;
+      border: 1px solid rgba(0, 79, 110, 0.2);
       margin-bottom: 1rem;
-      flex-wrap: wrap;
     }
 
     label {
@@ -64,6 +68,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.08em;
+      color: #555;
     }
 
     select, input {
@@ -72,6 +77,13 @@
       border-radius: 0.5rem;
       border: 1px solid #c5ced8;
       font-size: 0.95rem;
+      background: #fff;
+    }
+
+    #results-info {
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+      color: #666;
     }
 
     .pharmacy-card {
@@ -80,30 +92,63 @@
       border-radius: 0.9rem;
       padding: 1rem;
       margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: 0.25s;
+    }
+
+    .pharmacy-card:hover {
+      border-color: var(--alef-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.14);
     }
 
     .pharmacy-header {
       display: flex;
       justify-content: space-between;
+      align-items: baseline;
       gap: 0.5rem;
     }
 
     .pharmacy-name {
       font-weight: 600;
       color: var(--alef-dark);
+      font-size: 1rem;
+    }
+
+    .pharmacy-actions {
+      margin-top: 0.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
     }
 
     .pill-link {
       padding: 0.3rem 0.7rem;
       border-radius: 999px;
       border: 1px solid #d5d8dc;
+      background: #ffffff;
       font-size: 0.85rem;
       text-decoration: none;
       color: var(--gris-texto);
-      margin-right: 0.4rem;
     }
 
     .pill-link:hover { background: #eef1f4; }
+
+    .status-card {
+      background: #fff;
+      border-radius: 0.9rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      header img { height: 70px; }
+      header h1 { font-size: 1.4rem; }
+      main { padding: 1rem; }
+    }
   </style>
 </head>
 
@@ -116,17 +161,32 @@
 
 <main>
 
-  <section class="filters">
+  <section class="filters" autocomplete="off">
     <div style="flex:1 1 200px;">
-      <label>Provincia</label>
+      <label for="province-select">Provincia</label>
       <select id="province-select"></select>
     </div>
 
     <div style="flex:1 1 200px;">
-      <label>Localidad / Barrio</label>
-      <input type="text" id="locality-input" placeholder="Ej. Recoleta, Rosario, Mendoza…">
+      <label for="locality-input">Localidad / Barrio</label>
+      <input
+        type="text"
+        id="locality-input"
+        name="locality-input"
+        placeholder="Ej. Recoleta, Rosario, Mendoza…"
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="search"
+      >
     </div>
   </section>
+
+  <div id="data-status" class="status-card">
+    <strong>Cargando farmacias desde Excel…</strong><br/>
+    Asegurate de que exista <code>farmacias.xlsx</code> en la misma carpeta.
+  </div>
 
   <p id="results-info"></p>
   <section id="pharmacy-list"></section>
@@ -142,18 +202,41 @@
   const pharmacyList = document.getElementById("pharmacy-list");
   const resultsInfo = document.getElementById("results-info");
   const noResults = document.getElementById("no-results");
+  const dataStatus = document.getElementById("data-status");
 
   let pharmacies = [];
 
-  const normalize = s =>
-    (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  function normalizeText(s) {
+    return (s || "")
+      .toString()
+      .trim()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  }
 
-  const digits = s => (s || "").replace(/\D/g, "");
+  function cleanDigits(v) {
+    // Maneja números, floats (científica), strings, etc.
+    return (v === null || v === undefined) ? "" : String(v).replace(/\D/g, "");
+  }
 
-  const mapsUrl = p =>
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      `${p.address}, ${p.locality}, ${p.province}, Argentina`
-    )}`;
+  function buildMapsUrl(p) {
+    return "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent(`${p.address}, ${p.locality}, ${p.province}, Argentina`);
+  }
+
+  function buildWhatsappUrl(n) {
+    const d = cleanDigits(n).replace(/^0/, "");
+    return d ? ("https://wa.me/54" + d) : "#";
+  }
+
+  function buildTelUrl(n) {
+    const d = cleanDigits(n);
+    return d ? ("tel:" + d) : "#";
+  }
+
+  function isValidRow(p) {
+    return !!(p.name && p.address && p.locality && p.province);
+  }
 
   function fillProvinces() {
     provinceSelect.innerHTML = "";
@@ -163,7 +246,7 @@
     optAll.textContent = "Todo el País";
     provinceSelect.appendChild(optAll);
 
-    const provinces = [...new Set(pharmacies.map(p => p.province))].sort();
+    const provinces = [...new Set(pharmacies.map(p => p.province).filter(Boolean))].sort();
     provinces.forEach(p => {
       const opt = document.createElement("option");
       opt.value = p;
@@ -171,54 +254,108 @@
       provinceSelect.appendChild(opt);
     });
 
-    // Default fijo: CABA
+    // Default fijo: CABA si existe; si no, Todo el País
     provinceSelect.value = provinces.includes("CABA") ? "CABA" : "";
   }
 
   function render() {
-    const prov = provinceSelect.value;
-    const term = normalize(localityInput.value);
+    const prov = provinceSelect.value; // "" = Todo el País
+    const term = normalizeText(localityInput.value);
 
-    const filtered = pharmacies.filter(p =>
-      (!prov || p.province === prov) &&
-      (!term || normalize(`${p.name} ${p.locality} ${p.address}`).includes(term))
-    );
+    const filtered = pharmacies.filter(p => {
+      const matchProv = (!prov || p.province === prov);
+      const hay = normalizeText(`${p.name} ${p.locality} ${p.city} ${p.address} ${p.province}`);
+      const matchTerm = (!term || hay.includes(term));
+      return matchProv && matchTerm;
+    });
 
     pharmacyList.innerHTML = "";
-    resultsInfo.textContent = `Mostrando ${filtered.length} farmacia(s)`;
-    noResults.style.display = filtered.length ? "none" : "block";
+
+    if (!filtered.length) {
+      noResults.style.display = "block";
+      resultsInfo.textContent = "";
+      return;
+    }
+
+    noResults.style.display = "none";
+    resultsInfo.textContent =
+      `Mostrando ${filtered.length} farmacia(s)` + (prov ? ` en ${prov}` : " en todo el país");
 
     filtered.forEach(p => {
       const card = document.createElement("div");
       card.className = "pharmacy-card";
+
       card.innerHTML = `
         <div class="pharmacy-header">
           <span class="pharmacy-name">${p.name}</span>
           <span style="font-size:.85rem;color:#777">${p.locality}</span>
         </div>
         <p>${p.address} - ${p.locality}</p>
-        <a class="pill-link" href="${mapsUrl(p)}" target="_blank">Maps</a>
-        ${p.whatsapp ? `<a class="pill-link" href="https://wa.me/54${digits(p.whatsapp)}" target="_blank">WhatsApp ${p.whatsappDisplay}</a>` : ""}
-        ${p.phone ? `<a class="pill-link" href="tel:${digits(p.phone)}">Tel. ${p.phoneDisplay}</a>` : ""}
+
+        <div class="pharmacy-actions">
+          <a class="pill-link" href="${buildMapsUrl(p)}" target="_blank" rel="noopener noreferrer">Maps</a>
+          ${p.whatsapp ? `<a class="pill-link" href="${buildWhatsappUrl(p.whatsapp)}" target="_blank" rel="noopener noreferrer">WhatsApp ${p.whatsappDisplay || p.whatsapp}</a>` : ""}
+          ${p.phone ? `<a class="pill-link" href="${buildTelUrl(p.phone)}">Tel. ${p.phoneDisplay || p.phone}</a>` : ""}
+        </div>
       `;
+
       pharmacyList.appendChild(card);
     });
   }
 
   async function loadExcel() {
-    const res = await fetch("farmacias.xlsx?v=" + Date.now());
-    const data = await res.arrayBuffer();
-    const wb = XLSX.read(data, { type: "array" });
-    const sheet = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+    try {
+      const res = await fetch("farmacias.xlsx?v=" + Date.now());
+      if (!res.ok) throw new Error("No se pudo descargar farmacias.xlsx (HTTP " + res.status + ")");
 
-    pharmacies = rows.filter(r => r.name && r.address && r.locality && r.province);
-    fillProvinces();
-    render();
+      const data = await res.arrayBuffer();
+      const wb = XLSX.read(data, { type: "array" });
+
+      const sheetName = wb.SheetNames.includes("Farmacias") ? "Farmacias" : wb.SheetNames[0];
+      const sheet = wb.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+      pharmacies = rows
+        .map(r => ({
+          name: (r.name || "").toString().trim(),
+          address: (r.address || "").toString().trim(),
+          locality: (r.locality || "").toString().trim(),
+          city: (r.city || "").toString().trim(),
+          province: (r.province || "").toString().trim(),
+          whatsapp: cleanDigits(r.whatsapp),
+          whatsappDisplay: (r.whatsappDisplay || "").toString().trim(),
+          phone: cleanDigits(r.phone),
+          phoneDisplay: (r.phoneDisplay || "").toString().trim(),
+          notes: (r.notes || "").toString().trim()
+        }))
+        .filter(isValidRow);
+
+      dataStatus.style.display = "none";
+
+      // IMPORTANTÍSIMO: limpiar el input SIEMPRE (evita “solo Rex” por restauración del navegador)
+      localityInput.value = "";
+      // En Safari a veces restaura después: doble limpieza
+      setTimeout(() => { localityInput.value = ""; }, 0);
+      setTimeout(() => { localityInput.value = ""; }, 200);
+
+      fillProvinces();
+      render();
+    } catch (err) {
+      dataStatus.innerHTML =
+        "<strong>Error cargando farmacias desde Excel.</strong><br/>" +
+        "Verificá que <code>farmacias.xlsx</code> esté en la misma carpeta que el HTML.<br/><br/>" +
+        "<code>" + (err && err.message ? err.message : err) + "</code>";
+    }
   }
 
   provinceSelect.addEventListener("change", render);
   localityInput.addEventListener("input", render);
+
+  // Si el navegador vuelve con bfcache, también limpiamos y re-renderizamos
+  window.addEventListener("pageshow", () => {
+    localityInput.value = "";
+    render();
+  });
 
   loadExcel();
 </script>

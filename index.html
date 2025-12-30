@@ -198,6 +198,13 @@
       font-size: 14px;
       line-height: 1.35;
     }
+    .meta a{
+      color: var(--blue);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .meta a:hover{ opacity: .85; }
+
     .pill{
       display:inline-flex;
       align-items:center;
@@ -285,7 +292,8 @@
 <header>
   <div class="container">
     <div class="brand-top">
-      <img src="logo_alefmedical.png" alt="Alef Medical" onerror="this.style.display='none';document.getElementById('alefFallback').style.display='block';" />
+      <img src="logo_alefmedical.png" alt="Alef Medical"
+           onerror="this.style.display='none';document.getElementById('alefFallback').style.display='block';" />
       <div id="alefFallback" style="display:none;font-weight:700;color:var(--blue);font-size:18px;">Alef Medical</div>
       <div class="brand-text">Alef Medical Argentina</div>
     </div>
@@ -325,7 +333,6 @@
 
         <div>
           <label for="localidadInput">Localidad</label>
-          <!-- Autocomplete via datalist -->
           <input id="localidadInput" list="localidadesList" placeholder="Escribí para buscar (opcional)" autocomplete="off" />
           <datalist id="localidadesList"></datalist>
         </div>
@@ -404,7 +411,7 @@
   // -----------------------------
   // 1) Lectura Excel + Mapeo
   // -----------------------------
-  let allRows = [];     // canonical rows
+  let allRows = [];      // canonical rows
   let filteredRows = []; // currently shown
 
   const provinciaSelect = document.getElementById('provinciaSelect');
@@ -416,27 +423,32 @@
   const pillInfo   = document.getElementById('pillInfo');
   const farmaciasList = document.getElementById('farmaciasList');
 
-  function norm(v){
-    return String(v ?? '').trim();
-  }
-  function low(v){
-    return norm(v).toLowerCase();
-  }
+  function norm(v){ return String(v ?? '').trim(); }
+  function low(v){ return norm(v).toLowerCase(); }
 
-  // Mapeo flexible: soporta tu Excel real (name/address/locality/city/province/phoneDisplay/whatsappDisplay)
-  // y también encabezados "Farmacia/Dirección/Localidad/Provincia/Teléfono" si algún día los cambiás.
+  // Mapeo flexible: soporta tu Excel real (name/address/locality/city/province/whatsappDisplay/phoneDisplay)
+  // y también encabezados "Farmacia/Dirección/Localidad/Provincia/Teléfono/WhatsApp" si algún día los cambiás.
   function toCanonical(row){
-    const farmName = norm(row.Farmacia ?? row.farmacia ?? row.name ?? row.Nombre ?? row.nombre);
-    const address  = norm(row['Dirección'] ?? row.Direccion ?? row.address ?? row.direccion);
-    const prov     = norm(row.Provincia ?? row.province ?? row.provincia);
-    const loc      = norm(row.Localidad ?? row.locality ?? row.city ?? row.localidad);
-    const phone    = norm(row['Teléfono'] ?? row.Telefono ?? row.phoneDisplay ?? row.phone ?? row.whatsappDisplay ?? row.whatsapp);
+    const name = norm(row.Farmacia ?? row.farmacia ?? row.name ?? row.Nombre ?? row.nombre);
+
+    const address = norm(row['Dirección'] ?? row.Direccion ?? row.address ?? row.direccion);
+
+    const province = norm(row.Provincia ?? row.province ?? row.provincia);
+
+    // En tu Excel real suelen existir "locality" y "city"
+    const locality = norm(row.Localidad ?? row.locality ?? row.city ?? row.localidad);
+
+    // Separar Tel y WhatsApp (en tu Excel: phoneDisplay / whatsappDisplay)
+    const phone = norm(row['Teléfono'] ?? row.Telefono ?? row.phoneDisplay ?? row.phone);
+    const whatsapp = norm(row.WhatsApp ?? row.whatsappDisplay ?? row.whatsapp);
+
     return {
-      name: farmName || '—',
+      name: name || '—',
       address: address || '—',
-      province: prov || '—',
-      locality: loc || '—',
-      phone: phone || ''
+      province: province || '—',
+      locality: locality || '—',
+      phone: phone || '',
+      whatsapp: whatsapp || ''
     };
   }
 
@@ -447,17 +459,15 @@
       const buf = await res.arrayBuffer();
       const wb = XLSX.read(buf, { type: 'array' });
 
-      // usa primera hoja “útil”
       const sheetName = wb.SheetNames[0];
       const sheet = wb.Sheets[sheetName];
 
       const raw = XLSX.utils.sheet_to_json(sheet, { defval: '' });
       allRows = raw.map(toCanonical).filter(r => r.name !== '—' || r.address !== '—');
 
-      // Home: mostrar todo
       buildProvinciaOptions();
-      buildLocalidadesDatalist(); // sin provincia seleccionada (todas)
-      applyFilters(); // sin filtros -> todo
+      buildLocalidadesDatalist(''); // todas
+      applyFilters(); // Home: sin filtros -> todo
     }catch(err){
       console.error(err);
       statusText.textContent = 'No se pudo cargar el listado.';
@@ -477,12 +487,11 @@
   }
 
   function buildProvinciaOptions(){
-    // Limpio opciones (dejo "Sin filtro")
     const keep0 = provinciaSelect.options[0];
     provinciaSelect.innerHTML = '';
     provinciaSelect.appendChild(keep0);
 
-    const provincias = uniqueSorted(allRows.map(r => r.province).filter(p => p !== '—'));
+    const provincias = uniqueSorted(allRows.map(r => r.province).filter(p => p && p !== '—'));
     provincias.forEach(p=>{
       const opt = document.createElement('option');
       opt.value = p;
@@ -497,7 +506,7 @@
       ? allRows.filter(r => r.province === provinciaValue)
       : allRows;
 
-    const localidades = uniqueSorted(rows.map(r => r.locality).filter(l => l !== '—'));
+    const localidades = uniqueSorted(rows.map(r => r.locality).filter(l => l && l !== '—'));
     localidades.forEach(l=>{
       const opt = document.createElement('option');
       opt.value = l;
@@ -506,13 +515,54 @@
   }
 
   // -----------------------------
-  // 2) Filtros + Render
+  // 2) Links Tel/WhatsApp + Maps
+  // -----------------------------
+  function digitsOnly(str){
+    return String(str ?? '').replace(/\D/g, '');
+  }
+
+  function buildWhatsAppLink(value){
+    const v = norm(value);
+    if (!v) return '';
+    if (v.includes('wa.me')) return v;
+
+    const digits = digitsOnly(v);
+    // WhatsApp requiere formato internacional sin '+'
+    return digits ? `https://wa.me/${digits}` : '';
+  }
+
+  function buildTelLink(value){
+    const v = norm(value);
+    if (!v) return '';
+    const digits = digitsOnly(v);
+    if (!digits) return '';
+
+    // Para tel: usamos +<digits> (funciona bien en móviles)
+    return `tel:+${digits}`;
+  }
+
+  function buildMapsLink(address, locality, province){
+    const q = [address, locality, province].filter(x => norm(x) && norm(x) !== '—').join(', ');
+    const query = encodeURIComponent(q || address || '');
+    return `https://www.google.com/maps/search/?api=1&query=${query}`;
+  }
+
+  function escapeHtml(str){
+    return String(str ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#039;");
+  }
+
+  // -----------------------------
+  // 3) Filtros + Render
   // -----------------------------
   function applyFilters(){
     const prov = norm(provinciaSelect.value);
     const loc  = norm(localidadInput.value);
 
-    // NO filtrar si el usuario no usa filtros
     let rows = allRows;
 
     if(prov){
@@ -556,14 +606,27 @@
       const row = document.createElement('div');
       row.className = 'row';
 
-      const phoneLine = r.phone ? `<span><b>Tel:</b> ${escapeHtml(r.phone)}</span>` : '';
+      const mapsHref = buildMapsLink(r.address, r.locality, r.province);
+
+      const telHref = buildTelLink(r.phone);
+      const waHref  = buildWhatsAppLink(r.whatsapp);
+
+      const phoneHtml = (r.phone && telHref)
+        ? `<span><b>Tel:</b> <a href="${telHref}">${escapeHtml(r.phone)}</a></span>`
+        : '';
+
+      const waHtml = (r.whatsapp && waHref)
+        ? `<span><b>WhatsApp:</b> <a href="${waHref}" target="_blank" rel="noopener noreferrer">${escapeHtml(r.whatsapp)}</a></span>`
+        : '';
+
       row.innerHTML = `
         <h3>${escapeHtml(r.name)}</h3>
         <div class="meta">
-          <span><b>Dirección:</b> ${escapeHtml(r.address)}</span>
+          <span><b>Dirección:</b> <a href="${mapsHref}" target="_blank" rel="noopener noreferrer">${escapeHtml(r.address)}</a></span>
           <span><b>Localidad:</b> ${escapeHtml(r.locality)}</span>
           <span><b>Provincia:</b> ${escapeHtml(r.province)}</span>
-          ${phoneLine}
+          ${phoneHtml}
+          ${waHtml}
         </div>
       `;
       frag.appendChild(row);
@@ -573,24 +636,15 @@
     farmaciasList.appendChild(frag);
   }
 
-  function escapeHtml(str){
-    return String(str ?? '')
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'","&#039;");
-  }
-
-  // Eventos
+  // Eventos filtros
   provinciaSelect.addEventListener('change', ()=>{
-    // cascada: al cambiar provincia, refresco datalist de localidades y limpio localidad (para evitar “no match”)
+    // cascada: al cambiar provincia, actualizo datalist de localidades y limpio localidad
     buildLocalidadesDatalist(provinciaSelect.value);
     localidadInput.value = '';
     applyFilters();
   });
 
-  // Para no filtrar por cada tecla (mejor UX): filtro al salir del campo o al presionar Enter
+  // filtro al confirmar (change) o Enter
   localidadInput.addEventListener('change', applyFilters);
   localidadInput.addEventListener('keydown', (e)=>{
     if(e.key === 'Enter'){
@@ -602,12 +656,12 @@
   todoPaisBtn.addEventListener('click', ()=>{
     provinciaSelect.value = '';
     localidadInput.value = '';
-    buildLocalidadesDatalist(''); // vuelve a todas
+    buildLocalidadesDatalist('');
     applyFilters();
   });
 
   // -----------------------------
-  // 3) Formulario /api/contact
+  // 4) Formulario /api/contact
   // -----------------------------
   const contactForm = document.getElementById('contactForm');
   const formMsg = document.getElementById('formMsg');
@@ -641,9 +695,7 @@
         body: JSON.stringify({ name, phone, message })
       });
 
-      if(!res.ok){
-        throw new Error('Error en el envío');
-      }
+      if(!res.ok) throw new Error('Error en el envío');
 
       setMsg('Mensaje enviado. Gracias, te contactaremos a la brevedad.', 'ok');
       contactForm.reset();
@@ -662,4 +714,3 @@
 
 </body>
 </html>
-

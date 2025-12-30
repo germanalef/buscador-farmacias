@@ -46,20 +46,33 @@
 
     .brand-top{
       display:flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items:center;
-      gap: 8px;
+      gap: 14px;
       padding-bottom: 14px;
+      justify-content: center; /* centrar logo + texto */
+      text-align: center;
     }
     .brand-top img{
-      height: 62px;
+      height: 96px; /* logo grande */
       width: auto;
       object-fit: contain;
     }
-    .brand-top .brand-text{
-      font-size: 14px;
-      color: var(--muted);
+    .brand-top .brand-name{
+      margin: 0;
+      font-size: 26px; /* título Alef un poco más grande */
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1.05;
       letter-spacing: .2px;
+    }
+    .brand-top .brand-text{
+      font-size: 32px; /* mayor tamaño para la marca */
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: .2px;
+      line-height: 1;
+      margin: 0;
     }
 
     .green-sep{
@@ -130,7 +143,10 @@
       font-size: 15px;
       outline: none;
       background:#fff;
+      height: 44px; /* igual altura para selects e inputs */
+      line-height: 1.1;
     }
+    select{ appearance: none; -webkit-appearance: none; }
     select:focus, input:focus, textarea:focus{
       border-color: rgba(43,182,115,.65);
       box-shadow: 0 0 0 3px rgba(43,182,115,.15);
@@ -174,36 +190,53 @@
     }
 
     .list{
-      border: 1px solid var(--line2);
       border-radius: var(--radius);
-      overflow:hidden;
-      background:#fff;
-      box-shadow: var(--shadow);
+      overflow:visible;
+      background:transparent;
+      padding: 6px 0;
     }
     .row{
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line2);
+      background:#fff;
+      border: 1px solid var(--line2);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin: 12px 0;
+      box-shadow: 0 6px 18px rgba(31,42,68,.06);
+      display: block;
+      transition: transform .12s ease, box-shadow .12s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .row:last-child{ border-bottom:none; }
+    .row:hover{ transform: translateY(-4px); box-shadow: 0 12px 30px rgba(31,42,68,.09); }
     .row h3{
-      margin: 0 0 6px;
-      font-size: 16px;
+      margin: 0 0 8px;
+      font-size: 18px; /* un toque más grande */
       letter-spacing: .2px;
     }
     .meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap: 8px 14px;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.35;
+      line-height: 1.5; /* más aire entre líneas */
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px; /* separar más las 3 líneas */
     }
-    .meta a{
-      color: var(--blue);
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
+    /* Links: sin subrayado por defecto */
+    a{ text-decoration: none; color: inherit; }
+    .meta a{ color: var(--blue); text-decoration: none; }
     .meta a:hover{ opacity: .85; }
+    /* Líneas dentro de cada card (3 líneas): dirección / localidad·provincia / contactos */
+    .meta .line{ display:block; }
+    .row::before{
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: linear-gradient(180deg,var(--green), rgba(43,182,115,.6));
+    }
+    .row > *{ margin-left: 12px; } /* evitar choque con el acento */
 
     .pill{
       display:inline-flex;
@@ -228,28 +261,130 @@
       width: 100%;
       margin: 24px 0;
     }
+    /* Wrapper que contiene el banner y el formulario */
+    .totax-contact{
+      display:flex;
+      gap: 20px;
+      align-items:stretch; /* para que banner y form queden de la misma altura */
+      justify-content:center;
+      margin-top: 18px;
+      margin-bottom: 18px;
+      flex-wrap:wrap;
+    }
+
     .totax{
-      text-align:center;
-      padding-bottom: 6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex: 1 1 420px;
+      min-width: 260px;
     }
     .totax img{
-      max-width: 520px;   /* moderado */
-      width: 100%;
+      max-width: 420px;   /* un poco más chico */
+      max-height: 360px; /* limitar altura para que coincida mejor con el card */
+      width: auto;
+      height: auto;
+      display: block;
       border-radius: 14px;
       box-shadow: var(--shadow);
     }
+    .contact-card{
+      flex: 1 1 420px;
+      min-width: 280px;
+      display:flex;
+      align-items:stretch;
+      justify-content:center;
+    }
+    .contact-card .card{ width:100%; height:100%; display:flex; flex-direction:column; }
+    .contact-card form{ display:flex; flex-direction:column; flex:1; }
+    .form-actions{ margin-top: auto; }
+    .totax .text{
+      max-width: 520px;
+      margin: 0;
+      color: var(--blue);
+      font-size: 16px;
+      line-height: 1.45;
+      font-weight: 600;
+      background: rgba(43,182,115,0.06); /* fondo tenue verde */
+      padding: 12px 14px;
+      border-radius: 10px;
+      border-left: 4px solid rgba(43,182,115,0.9);
+      box-shadow: 0 6px 18px rgba(31,42,68,.04);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .totax .text em{ font-style: normal; color: var(--muted); font-weight: 500; }
+    .totax .text strong{ color: var(--green); font-weight: 800; }
+    .totax .text:hover{ transform: translateY(-3px); box-shadow: 0 12px 30px rgba(31,42,68,.06); }
+
+    /* Asegurar que banner y formulario tengan altura similar y moderada */
+      /* Ajuste para que banner y form sean más compactos y parejos */
+      .totax-contact .totax,
+      .totax-contact .contact-card { min-height: 260px; }
+      .totax img{ max-height: 260px; max-width: 520px; height: auto; }
+      .contact-card .card { min-height: 260px; }
+
+    /* Form compacto: Nombre + Celular en la misma fila y título dentro del form */
+    footer .card{ padding: 10px; }
+    footer .contact-grid{ grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; }
+    footer .contact-grid .full{ grid-column: 1 / -1; }
+    .contact-title{ margin: 0 0 12px; font-size: 18px; color: var(--blue); }
+
+    /* Chips para contactos y link de mapa */
+    .contact-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(31,42,68,.06);
+      color: var(--blue);
+      font-weight:700;
+      text-decoration:none;
+      border: 1px solid rgba(31,42,68,.06);
+      margin-right:8px;
+      font-size:13px;
+    }
+    .contact-chip:hover{ box-shadow: 0 8px 18px rgba(31,42,68,.06); }
+    .map-link{ text-decoration:none; color:inherit; }
+    .map-link{ display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:inherit; }
+    .map-link .map-text{ text-decoration:none; color:inherit; }
+    .map-link .map-emoji{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:26px;
+      height:26px;
+      border-radius:999px;
+      background: rgba(31,42,68,.06); /* mismo que .contact-chip */
+      color: var(--blue);
+      font-size:14px;
+      border: 1px solid rgba(31,42,68,.06);
+      line-height:1;
+    }
+    .map-link:hover{ text-decoration:none; opacity:.95; }
 
     /* ---------- Footer / Contact ---------- */
     footer{
       padding: 8px 0 34px;
+      background: rgba(111, 123, 117, 0.169); /* fondo verde tenue */
+      border-top: 1px solid rgba(43,182,115,0.06);
     }
     .contact-grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: 1fr; /* apilar cada campo del formulario de contacto */
+      gap: 8px; /* más compacto */
     }
     .contact-grid .full{ grid-column: 1 / -1; }
     textarea{ min-height: 110px; resize: vertical; }
+
+    /* Compactar exclusivamente el formulario del footer */
+    footer .card{ padding: 12px; }
+    footer label{ font-size: 12px; }
+    footer input, footer textarea{ padding: 6px 8px; font-size: 14px; height: 36px; }
+    footer textarea{ min-height: 64px; }
+    .form-actions{ gap: 8px; margin-top: 8px; }
+    .btn-primary{ padding: 8px 10px; height: 36px; font-size: 13px; }
+    footer .hint{ margin-top:8px; font-size:13px; }
 
     .form-actions{
       display:flex;
@@ -283,6 +418,8 @@
       .brand-row-grid .left, .brand-row-grid .right{ justify-self:center; }
       .brand-row-grid h1{ font-size: 24px; }
       .contact-grid{ grid-template-columns: 1fr; }
+      .totax{ flex-direction: column; text-align:center; align-items:center; }
+      .totax .text{ text-align:center; font-size:15px; padding:10px 12px; }
     }
   </style>
 </head>
@@ -293,9 +430,10 @@
   <div class="container">
     <div class="brand-top">
       <img src="logo_alefmedical.png" alt="Alef Medical"
-           onerror="this.style.display='none';document.getElementById('alefFallback').style.display='block';" />
-      <div id="alefFallback" style="display:none;font-weight:700;color:var(--blue);font-size:18px;">Alef Medical</div>
-      <div class="brand-text">Alef Medical Argentina</div>
+           onerror="this.style.display='none';" />
+      <div>
+        <div class="brand-text">Alef Medical Argentina</div>
+      </div>
     </div>
   </div>
 
@@ -338,9 +476,9 @@
         </div>
 
         <div>
-          <button class="btn" id="todoPaisBtn" type="button" aria-label="Mostrar todo el país">
-            Todo el País
-          </button>
+          <button class="btn" id="todoPaisBtn" type="button" aria-label="Limpiar filtros">
+              Limpiar filtros
+            </button>
         </div>
       </div>
 
@@ -362,48 +500,51 @@
     </div>
   </section>
 
-  <!-- TOTAX -->
-  <div class="section-sep"></div>
-  <section class="totax" aria-label="Banner TOTAX">
-    <a href="https://Totax.com.ar" target="_blank" rel="noopener noreferrer">
-      <img src="banner_totax.png" alt="TOTAX" onerror="this.style.display='none';" />
-    </a>
-  </section>
+  <!-- TOTAX + CONTACT -->
+  <!-- (Se movió el banner y el formulario al footer para evitar duplicados) -->
+
+<!-- Footer Contacto -->
 </main>
 
 <!-- Footer Contacto -->
-<div class="section-sep"></div>
-<footer class="container">
-  <h2 style="margin:0 0 12px;color:var(--blue);font-size:20px;">Contacto</h2>
-
-  <div class="card">
-    <form id="contactForm" novalidate>
-      <div class="contact-grid">
-        <div>
-          <label for="nombreApellido">Nombre y apellido</label>
-          <input id="nombreApellido" name="name" type="text" required placeholder="Ej: Germán Begani" />
-        </div>
-
-        <div>
-          <label for="celular">Celular</label>
-          <input id="celular" name="phone" type="tel" required placeholder="Ej: +54 9 11 1234-5678" />
-        </div>
-
-        <div class="full">
-          <label for="consulta">Consulta</label>
-          <textarea id="consulta" name="message" required placeholder="Escribí tu consulta…"></textarea>
-        </div>
+<footer>
+  <div class="container">
+    <div class="totax-contact" aria-label="Banner TOTAX y Contacto">
+      <div class="totax" aria-label="Banner TOTAX">
+        <a href="https://Totax.com.ar" target="_blank" rel="noopener noreferrer">
+          <img src="Logo_Totax_color.png" alt="TOTAX" onerror="this.style.display='none';" />
+        </a>
       </div>
 
-      <div class="form-actions">
-        <button class="btn btn-primary" id="sendBtn" type="submit">Enviar</button>
-        <div class="msg" id="formMsg"></div>
-      </div>
+      <div class="contact-card">
+        <div class="card">
+          <h3 class="contact-title">Contacto</h3>
+          <form id="contactForm" novalidate>
+            <div class="contact-grid">
+                    <div>
+                      <label for="nombreApellido">Nombre y apellido</label>
+                      <input id="nombreApellido" name="name" type="text" required  />
+                    </div>
 
-      <div class="hint" style="margin-top:12px;">
-        Tu consulta se envía mediante un endpoint <code>/api/contact</code> (no se expone el email destino en esta página).
+                    <div>
+                      <label for="celular">Celular</label>
+                      <input id="celular" name="phone" type="tel" required  />
+                    </div>
+
+                    <div class="full">
+                      <label for="consulta">Consulta</label>
+                      <textarea id="consulta" name="message" required placeholder="Escribí tu consulta…"></textarea>
+                    </div>
+                  </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" id="sendBtn" type="submit">Enviar</button>
+              <div class="msg" id="formMsg"></div>
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
 </footer>
 
@@ -611,22 +752,22 @@
       const telHref = buildTelLink(r.phone);
       const waHref  = buildWhatsAppLink(r.whatsapp);
 
+      // Phone/WA as chips
       const phoneHtml = (r.phone && telHref)
-        ? `<span><b>Tel:</b> <a href="${telHref}">${escapeHtml(r.phone)}</a></span>`
+        ? `<a class="contact-chip" href="${telHref}">📞 ${escapeHtml(r.phone)}</a>`
         : '';
 
       const waHtml = (r.whatsapp && waHref)
-        ? `<span><b>WhatsApp:</b> <a href="${waHref}" target="_blank" rel="noopener noreferrer">${escapeHtml(r.whatsapp)}</a></span>`
+        ? `<a class="contact-chip" href="${waHref}" target="_blank" rel="noopener noreferrer">💬 ${escapeHtml(r.whatsapp)}</a>`
         : '';
 
+      // Estructura en 3 líneas: dirección (con emoji mapa) / localidad · provincia / contactos (chips)
       row.innerHTML = `
         <h3>${escapeHtml(r.name)}</h3>
         <div class="meta">
-          <span><b>Dirección:</b> <a href="${mapsHref}" target="_blank" rel="noopener noreferrer">${escapeHtml(r.address)}</a></span>
-          <span><b>Localidad:</b> ${escapeHtml(r.locality)}</span>
-          <span><b>Provincia:</b> ${escapeHtml(r.province)}</span>
-          ${phoneHtml}
-          ${waHtml}
+          <span class="line"><b>Dirección:</b> <a class="map-link" href="${mapsHref}" target="_blank" rel="noopener noreferrer"><span class="map-text">${escapeHtml(r.address)}</span><span class="map-emoji" aria-hidden="true">📍</span></a></span>
+          <span class="line">${escapeHtml(r.locality)} · ${escapeHtml(r.province)}</span>
+          <span class="line">${phoneHtml} ${waHtml}</span>
         </div>
       `;
       frag.appendChild(row);

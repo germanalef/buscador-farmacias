@@ -416,9 +416,14 @@
       .brand-row-grid{
         grid-template-columns: 1fr;
         justify-items:center;
+        gap: 16px;
       }
-      .brand-row-grid .left, .brand-row-grid .right{ justify-self:center; }
-      .brand-row-grid h1{ font-size: 24px; }
+      .brand-row-grid .left, .brand-row-grid .right{ justify-self:center; display: block; }
+      .brand-row-grid h1{ font-size: 22px; grid-column: 1 / -1; order: 3; margin-top: 8px; }
+      .brand-row-grid img{ height: 40px; }
+      .brand-top{ flex-direction: column; gap: 12px; padding-bottom: 12px; }
+      .brand-top img{ height: 72px; }
+      .brand-text{ font-size: 26px; }
       .contact-grid{ grid-template-columns: 1fr; }
       .totax{ flex-direction: column; text-align:center; align-items:center; }
       .totax .text{ text-align:center; font-size:15px; padding:10px 12px; }

@@ -523,12 +523,12 @@
             <div class="contact-grid">
                     <div>
                       <label for="nombreApellido">Nombre y apellido</label>
-                      <input id="nombreApellido" name="name" type="text" required  />
+                      <input id="nombreApellido" name="name" type="text" required placeholder="Ej: Germán Begani" />
                     </div>
 
                     <div>
                       <label for="celular">Celular</label>
-                      <input id="celular" name="phone" type="tel" required  />
+                      <input id="celular" name="phone" type="tel" required placeholder="Ej: +54 9 11 1234-5678" />
                     </div>
 
                     <div class="full">
@@ -538,7 +538,7 @@
                   </div>
 
             <div class="form-actions">
-              <button class="btn btn-primary" id="sendBtn" type="submit">Enviar</button>
+              <a class="btn btn-primary" id="sendBtn" href="#">Enviar por Mail</a>
               <div class="msg" id="formMsg"></div>
             </div>
           </form>
@@ -549,6 +549,12 @@
 </footer>
 
 <script>
+  // Email de destino (cambiar a tu email)
+  const CONTACT_EMAIL = 'rochibega@gmail.com';
+  
+  // Asunto del email
+  const EMAIL_SUBJECT = 'Nueva consulta de línea Dolor - Alef Medical';
+  
   // -----------------------------
   // 1) Lectura Excel + Mapeo
   // -----------------------------
@@ -802,7 +808,7 @@
   });
 
   // -----------------------------
-  // 4) Formulario /api/contact
+  // 4) Formulario: Abrir mail directamente
   // -----------------------------
   const contactForm = document.getElementById('contactForm');
   const formMsg = document.getElementById('formMsg');
@@ -813,40 +819,24 @@
     formMsg.className = 'msg' + (type ? ' ' + type : '');
   }
 
-  contactForm.addEventListener('submit', async (e)=>{
+  sendBtn.addEventListener('click', (e)=>{
     e.preventDefault();
-    setMsg('', '');
 
     const name = norm(document.getElementById('nombreApellido').value);
     const phone = norm(document.getElementById('celular').value);
     const message = norm(document.getElementById('consulta').value);
 
     if(!name || !phone || !message){
-      setMsg('Por favor completá Nombre y apellido, Celular y Consulta.', 'err');
+      setMsg('Por favor completá todos los campos.', 'err');
       return;
     }
 
-    sendBtn.disabled = true;
-    sendBtn.textContent = 'Enviando…';
-
-    try{
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({ name, phone, message })
-      });
-
-      if(!res.ok) throw new Error('Error en el envío');
-
-      setMsg('Mensaje enviado. Gracias, te contactaremos a la brevedad.', 'ok');
-      contactForm.reset();
-    }catch(err){
-      console.error(err);
-      setMsg('No se pudo enviar. Intentá nuevamente en unos minutos.', 'err');
-    }finally{
-      sendBtn.disabled = false;
-      sendBtn.textContent = 'Enviar';
-    }
+    // Construir el cuerpo del email
+    const body = `Nombre: ${name}\nTeléfono: ${phone}\n\nConsulta:\n${message}`;
+    
+    // Crear el link mailto: y abrir
+    const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoLink;
   });
 
   // Start
